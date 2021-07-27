@@ -1,8 +1,8 @@
 sidebar:
   menu:
-    post: '[btn.blog](/)'
-    wiki: '[档案](/wiki/)'
-    more: '[更多](/more/)'
+    post: '[随笔](/)'
+    wiki: '[读书](/book/)'
+    wish: '[祈愿](/wish/)'
 
 article:
   auto_excerpt: 200

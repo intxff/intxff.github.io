@@ -1,29 +1,9 @@
-test:
-  title: Test
-  group: 测试
-  cover: true
-  logo:
-    src: https://cdn.jsdelivr.net/gh/cdn-x/wiki@1.0.2/stellar/icon.svg
-    small: 112px
-    large: 240px
-  description: 这是一个测试
-  #  repo: xaoxuu/hexo-theme-stellar
-  #comment_title: '评论区仅供交流，有问题请提 [issue](https://github.com/xaoxuu/hexo-theme-stellar/issues) 反馈。'
-  #beaudar:
-    #repo: xaoxuu/hexo-theme-stellar
-    #'issue-term': 'Q & A'
-
-te:
-  title: Te
-  tags: dw测试
-  cover: true
-  logo:
-    src: https://cdn.jsdelivr.net/gh/cdn-x/wiki@1.0.2/stellar/icon.svg
-    small: 112px
-    large: 240px
-  description: 这是一个测试
-  #  repo: xaoxuu/hexo-theme-stellar
-  #comment_title: '评论区仅供交流，有问题请提 [issue](https://github.com/xaoxuu/hexo-theme-stellar/issues) 反馈。'
-  #beaudar:
-    #repo: xaoxuu/hexo-theme-stellar
-    #'issue-term': 'Q & A'
+Wish:
+  title: 祈愿
+  index: false
+  description: '渺小的愿望'
+  sidebar: [toc]
+  sections:
+    '健身': [1, 50]
+    '书籍': [51, 100]
+    '视频': [101, 150]

@@ -1,7 +1,7 @@
 # Recent update
 recent:
   layout: recent
-  rss: /atom.xml # npm i hexo-generator-feed
+  #rss: /atom.xml # npm i hexo-generator-feed
   limit: 5 # Count of posts
 # TOC (valid only in layout:post/wiki)
 toc:
@@ -11,5 +11,6 @@ toc:
   max_depth: 5
 welcome:
   layout: markdown
-  title: ''
-  content: []
+  title: '穷'
+  content: 
+    - '欲望比能力多一分就是穷'

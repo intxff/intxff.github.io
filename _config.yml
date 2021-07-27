@@ -28,7 +28,7 @@ public_dir: public
 tag_dir: blog/tags
 archive_dir: blog/archives
 category_dir: blog/categories
-wiki_dir: wiki
+wiki_dir: book
 code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
