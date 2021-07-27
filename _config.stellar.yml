@@ -1,0 +1,13 @@
+sidebar:
+  menu:
+    post: '[btn.blog](/)'
+    wiki: '[档案](/wiki/)'
+    more: '[更多](/more/)'
+
+article:
+  auto_excerpt: 200
+  auto_cover: false
+
+style:
+  codeblock:
+    scrollbar: 0px
