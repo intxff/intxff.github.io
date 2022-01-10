@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 5.4.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://cdn.jsdelivr.net'>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>golang：interface - Eureka</title>
+
+  
+    <meta name="description" content="12345678910111213&#x2F;&#x2F; 空接口值type _interface struct &amp;#123;    dynamicType  *_type         &#x2F;&#x2F; 引用着接口值的动态类型    dynamicValue unsafe.Pointer &#x2F;&#x2F; 引用着接口值的动态值&amp;#125;&#x2F;&#x2F; 非空接口值type _interface struct &amp;#123;   dynamicTyp">
+<meta property="og:type" content="website">
+<meta property="og:title" content="interface">
+<meta property="og:url" content="https://intxff.github.io/wiki/golang/basic/type_interface.html">
+<meta property="og:site_name" content="Eureka">
+<meta property="og:description" content="12345678910111213&#x2F;&#x2F; 空接口值type _interface struct &amp;#123;    dynamicType  *_type         &#x2F;&#x2F; 引用着接口值的动态类型    dynamicValue unsafe.Pointer &#x2F;&#x2F; 引用着接口值的动态值&amp;#125;&#x2F;&#x2F; 非空接口值type _interface struct &amp;#123;   dynamicTyp">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-10T03:19:33.389Z">
+<meta property="article:modified_time" content="2022-01-10T03:19:33.389Z">
+<meta property="article:author" content="intxff">
+<meta name="twitter:card" content="summary">
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+</head>
+
+<body>
+  
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='wiki'>
+    
+
+
+<header class="header">
+
+<div class="logo-wrap wiki"><a style="filter: grayscale(100%)" class="wiki-home cap" href="/wiki"><svg aria-hidden="true" viewBox="0 0 16 16" width="1rem" height="1rem" fill="currentColor"><path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path></svg>所有项目</a><a class="title" href="/wiki/golang/basic/"><div class="main">golang 基础总结</div></a></div>
+</header>
+
+<div class="widgets">
+
+<div class="widget-wrap multi" id="toc"><div class="widget-header cap dis-select"><span class="name">语法速览</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/"><span class="toc-text">语法速览</span></a></div></div><div class="widget-header cap dis-select"><span class="name">类型系统</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type.html"><span class="toc-text">类型系统相关</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_general.html"><span class="toc-text">类型和值概述</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/basic_type.html"><span class="toc-text">内置基本类型</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/container.html"><span class="toc-text">容器类型</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_struct.html"><span class="toc-text">struct</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_pointer.html"><span class="toc-text">指针和非安全指针</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_channel.html"><span class="toc-text">channel</span></a></div><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/golang/basic/type_interface.html"><span class="toc-text">interface</span></a><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%80%BC%E5%B0%BA%E5%AF%B8"><span class="toc-text">值尺寸</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E9%9D%A2%E9%87%8F"><span class="toc-text">字面量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9B%B6%E5%80%BC"><span class="toc-text">零值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3%E7%9A%84%E6%9C%AF%E8%AF%AD"><span class="toc-text">接口的术语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%91%E5%AE%9A%E5%8A%A8%E6%80%81%E5%80%BC"><span class="toc-text">绑定动态值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E6%80%81%E5%92%8C%E5%8F%8D%E5%B0%84"><span class="toc-text">多态和反射</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3%E7%B1%BB%E5%9E%8B%E5%86%85%E5%B5%8C"><span class="toc-text">接口类型内嵌</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8C%E7%B1%BB%E5%9E%8B%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%80%BC%E6%AF%94%E8%BE%83"><span class="toc-text">同类型接口的值比较</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E5%AE%83"><span class="toc-text">其它</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#T-%E4%B8%8E-I%EF%BC%8CT-%E5%AE%9E%E7%8E%B0%E4%BA%86%E6%8E%A5%E5%8F%A3%E7%B1%BB%E5%9E%8B-I"><span class="toc-text">[]T 与 []I，T 实现了接口类型 I</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E6%8E%A5%E5%8F%A3%E7%B1%BB%E5%9E%8B%E6%AF%8F%E4%B8%AA%E6%8C%87%E5%AE%9A%E7%9A%84%E6%AF%8F%E4%B8%80%E4%B8%AA%E6%96%B9%E6%B3%95%E9%83%BD%E5%AF%B9%E5%BA%94%E7%9D%80%E4%B8%80%E4%B8%AA%E9%9A%90%E5%BC%8F%E5%A3%B0%E6%98%8E%E7%9A%84%E5%87%BD%E6%95%B0"><span class="toc-text">一个接口类型每个指定的每一个方法都对应着一个隐式声明的函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A9%BA%E6%8E%A5%E5%8F%A3%E4%BD%9C%E4%B8%BA%E5%8F%82%E6%95%B0"><span class="toc-text">空接口作为参数</span></a></li></ol></li></ol></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_convert.html"><span class="toc-text">类型转换</span></a></div></div></div>
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+  
+  
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">学习记录</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/golang/basic/">golang 基础总结</a></div><div id="post-meta">更新于&nbsp;<time datetime="2022-01-10T03:19:33.389Z">2022-01-10</time></div></div>
+
+  <article class='content md wiki'>
+  <h1 class="article-title"><span>interface</span></h1>
+  <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 空接口值</span></span><br><span class="line"><span class="keyword">type</span> _interface <span class="keyword">struct</span> &#123;</span><br><span class="line">    dynamicType  *_type         <span class="comment">// 引用着接口值的动态类型</span></span><br><span class="line">    dynamicValue unsafe.Pointer <span class="comment">// 引用着接口值的动态值</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 非空接口值</span></span><br><span class="line"><span class="keyword">type</span> _interface <span class="keyword">struct</span> &#123;</span><br><span class="line">   dynamicTypeInfo *<span class="keyword">struct</span> &#123;</span><br><span class="line">      dynamicType *_type       <span class="comment">// 引用着接口值的动态类型</span></span><br><span class="line">      methods     []*_function <span class="comment">// 引用着动态类型的对应方法列表</span></span><br><span class="line">   &#125;</span><br><span class="line">   dynamicValue unsafe.Pointer <span class="comment">// 引用着动态值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接口类型定义了一个方法集，任何实现了这一方法集的类型，都实现了这一接口，其值可以作为接口值被赋值给此接口类型量</p>
+<h2 id="值尺寸"><a href="#值尺寸" class="headerlink" title="值尺寸"></a>值尺寸</h2><p>2 words</p>
+<h2 id="字面量"><a href="#字面量" class="headerlink" title="字面量"></a>字面量</h2><p>任何实现接口的类型的字面量都可以作为值赋予</p>
+<h2 id="零值"><a href="#零值" class="headerlink" title="零值"></a>零值</h2><p><code>nil</code></p>
+<blockquote>
+<p>注意下面情况的区分<br>type A interface{}<br>var a, b A<br>var c []int<br>b = c<br>a, c 为 nil，但是 b 不为 nil，b 是动态值为 nil 的非零值空接口</p>
+</blockquote>
+<h2 id="接口的术语"><a href="#接口的术语" class="headerlink" title="接口的术语"></a>接口的术语</h2><ul>
+<li>实现: 某类型的方法集是接口的超集</li>
+<li>动态值和动态类型: 接口值所绑定的类型和值</li>
+</ul>
+<h2 id="绑定动态值"><a href="#绑定动态值" class="headerlink" title="绑定动态值"></a>绑定动态值</h2><ul>
+<li>动态值为非接口: 非接口值必须实现了接口，复制非接口值到动态值，并创建接口值的动态类型和方法列表</li>
+<li>动态值为接口: 此接口值必须实现了接口，复制接口值的动态值，并创建此接口值的动态值的动态类型和方法列表<blockquote>
+<p>由此可见，对于大的数据结构，使用指针作为动态值可以更为高效</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="多态和反射"><a href="#多态和反射" class="headerlink" title="多态和反射"></a>多态和反射</h2><p>观察非空接口的类型定义，其内部有动态值、动态类型及其方法集。</p>
+<ul>
+<li>反射: 依靠动态类型及动态值实现</li>
+<li>多态: 动态类型的方法集(多种类型都可以实现接口，同一个方法名称对应类型不同，其调用形式不变)</li>
+</ul>
+<h2 id="接口类型内嵌"><a href="#接口类型内嵌" class="headerlink" title="接口类型内嵌"></a>接口类型内嵌</h2><p>内嵌的接口等于直接展开，不能内嵌自己(废话)</p>
+<h2 id="同类型接口的值比较"><a href="#同类型接口的值比较" class="headerlink" title="同类型接口的值比较"></a>同类型接口的值比较</h2><ul>
+<li>接口值和非接口值比较: 非接口值隐式转换为接口值</li>
+<li>接口值和接口值比较:<ul>
+<li>动态类型为不可比较类型， panic</li>
+<li>动态类型相同，按照动态类型的规则比较，值相同则两接口值相同</li>
+</ul>
+</li>
+</ul>
+<h2 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h2><h3 id="T-与-I，T-实现了接口类型-I"><a href="#T-与-I，T-实现了接口类型-I" class="headerlink" title="[]T 与 []I，T 实现了接口类型 I"></a>[]T 与 []I，T 实现了接口类型 I</h3><h3 id="一个接口类型每个指定的每一个方法都对应着一个隐式声明的函数"><a href="#一个接口类型每个指定的每一个方法都对应着一个隐式声明的函数" class="headerlink" title="一个接口类型每个指定的每一个方法都对应着一个隐式声明的函数"></a>一个接口类型每个指定的每一个方法都对应着一个隐式声明的函数</h3><h3 id="空接口作为参数"><a href="#空接口作为参数" class="headerlink" title="空接口作为参数"></a>空接口作为参数</h3><p>虽然空接口类型可以接收任何值作为绑定值，但是空接口值的比较应该按上面的方式比较，由此也会有反直觉的两个 nil 值不等的问题</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> A <span class="keyword">interface</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">do</span><span class="params">(i <span class="keyword">interface</span>&#123;&#125;, t <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> i != <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;i not nil&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> i != t &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;i != t&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> a []<span class="keyword">int</span></span><br><span class="line">    <span class="keyword">var</span> b <span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">string</span></span><br><span class="line">    do(a, b)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"><span class="keyword">type</span> MyImplement <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(m *MyImplement)</span> <span class="title">String</span><span class="params">()</span> <span class="title">string</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;hi&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetStringer</span><span class="params">()</span> <span class="title">fmt</span>.<span class="title">Stringer</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s *MyImplement = <span class="literal">nil</span></span><br><span class="line">    <span class="keyword">return</span> s </span><br><span class="line">    <span class="comment">// s 赋值给 fmt.Stringer 接口类型值作为返回值，返回值变为 fmt.Stringer 的接口值</span></span><br><span class="line">    <span class="comment">// 其绑定的动态值为 nil，动态类型为 *MyImplement，但是不是 fmt.Stringer(nil) 值</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> GetStringer() == <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;GetStringer() == nil&quot;</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;GetStringer() != nil&quot;</span>) <span class="comment">// 输出这个</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+  
+
+
+  </article>
+  
+<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>接下来阅读</span></section><section class="body fs14"><a id="next" href="/wiki/golang/basic/type_convert.html">类型转换<span class="note">下一篇</span></a><div class="line"></div><a id="prev" href="/wiki/golang/basic/type_channel.html">channel<span class="note">上一篇</span></a></section></div>
+
+  
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="text"><p>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+<p>本站由 <a href="https://intxff.github.io/">@intxff</a> 创建，使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.4.0" title="v1.4.0">Stellar</a> 作为主题。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.4.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
+    sitesjs: '/js/plugins/sites.js',
+    friendsjs: '/js/plugins/friends.js',
+  };
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper/swiper-bundle.min.css","js":"https://unpkg.com/swiper/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://cdn.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://cdn.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://cdn.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>

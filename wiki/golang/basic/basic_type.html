@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 5.4.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://cdn.jsdelivr.net'>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>golang：内置基本类型 - Eureka</title>
+
+  
+    <meta name="description" content="布尔 值尺寸: 1 byte 字面量: true false 零值: false  数值型   类型 值尺寸 零值 字面量    int8, uint8(byte) 1 bytes 0 相应范围的整型字面量，byte 的字面量可以是个 character   int16, uint16 2 bytes 0 相应范围的整型字面量   int32(rune), uint32 4 bytes 0 相应范">
+<meta property="og:type" content="website">
+<meta property="og:title" content="内置基本类型">
+<meta property="og:url" content="https://intxff.github.io/wiki/golang/basic/basic_type.html">
+<meta property="og:site_name" content="Eureka">
+<meta property="og:description" content="布尔 值尺寸: 1 byte 字面量: true false 零值: false  数值型   类型 值尺寸 零值 字面量    int8, uint8(byte) 1 bytes 0 相应范围的整型字面量，byte 的字面量可以是个 character   int16, uint16 2 bytes 0 相应范围的整型字面量   int32(rune), uint32 4 bytes 0 相应范">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-10T03:19:33.389Z">
+<meta property="article:modified_time" content="2022-01-10T03:19:33.389Z">
+<meta property="article:author" content="intxff">
+<meta name="twitter:card" content="summary">
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+</head>
+
+<body>
+  
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='wiki'>
+    
+
+
+<header class="header">
+
+<div class="logo-wrap wiki"><a style="filter: grayscale(100%)" class="wiki-home cap" href="/wiki"><svg aria-hidden="true" viewBox="0 0 16 16" width="1rem" height="1rem" fill="currentColor"><path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path></svg>所有项目</a><a class="title" href="/wiki/golang/basic/"><div class="main">golang 基础总结</div></a></div>
+</header>
+
+<div class="widgets">
+
+<div class="widget-wrap multi" id="toc"><div class="widget-header cap dis-select"><span class="name">语法速览</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/"><span class="toc-text">语法速览</span></a></div></div><div class="widget-header cap dis-select"><span class="name">类型系统</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type.html"><span class="toc-text">类型系统相关</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_general.html"><span class="toc-text">类型和值概述</span></a></div><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/golang/basic/basic_type.html"><span class="toc-text">内置基本类型</span></a><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%83%E5%B0%94"><span class="toc-text">布尔</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E5%80%BC%E5%9E%8B"><span class="toc-text">数值型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E9%9D%A2%E9%87%8F"><span class="toc-text">字面量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-text">字符串</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%80%BC%E5%B0%BA%E5%AF%B8"><span class="toc-text">值尺寸</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9B%B6%E5%80%BC"><span class="toc-text">零值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E9%9D%A2%E9%87%8F-1"><span class="toc-text">字面量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C"><span class="toc-text">相关操作</span></a></li></ol></li></ol></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/container.html"><span class="toc-text">容器类型</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_struct.html"><span class="toc-text">struct</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_pointer.html"><span class="toc-text">指针和非安全指针</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_channel.html"><span class="toc-text">channel</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_interface.html"><span class="toc-text">interface</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_convert.html"><span class="toc-text">类型转换</span></a></div></div></div>
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+  
+  
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">学习记录</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/golang/basic/">golang 基础总结</a></div><div id="post-meta">更新于&nbsp;<time datetime="2022-01-10T03:19:33.389Z">2022-01-10</time></div></div>
+
+  <article class='content md wiki'>
+  <h1 class="article-title"><span>内置基本类型</span></h1>
+  <h2 id="布尔"><a href="#布尔" class="headerlink" title="布尔"></a>布尔</h2><ul>
+<li>值尺寸: 1 byte</li>
+<li>字面量: <code>true</code> <code>false</code></li>
+<li>零值: <code>false</code></li>
+</ul>
+<h2 id="数值型"><a href="#数值型" class="headerlink" title="数值型"></a>数值型</h2><table>
+<thead>
+<tr>
+<th align="center">类型</th>
+<th align="center">值尺寸</th>
+<th align="center">零值</th>
+<th align="center">字面量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">int8, uint8(byte)</td>
+<td align="center">1 bytes</td>
+<td align="center">0</td>
+<td align="center">相应范围的整型字面量，byte 的字面量可以是个 character</td>
+</tr>
+<tr>
+<td align="center">int16, uint16</td>
+<td align="center">2 bytes</td>
+<td align="center">0</td>
+<td align="center">相应范围的整型字面量</td>
+</tr>
+<tr>
+<td align="center">int32(rune), uint32</td>
+<td align="center">4 bytes</td>
+<td align="center">0</td>
+<td align="center">相应范围的整型字面量，rune 的字面量可以是个 unicode 码点</td>
+</tr>
+<tr>
+<td align="center">int64, uint64</td>
+<td align="center">8 bytes</td>
+<td align="center">0</td>
+<td align="center">相应范围的整型字面量</td>
+</tr>
+<tr>
+<td align="center">int, uint</td>
+<td align="center">取决于编译器实现，通常为 1 word</td>
+<td align="center">0</td>
+<td align="center">相应范围的整型字面量</td>
+</tr>
+<tr>
+<td align="center">uinptr</td>
+<td align="center">取决于编译器实现，要能容纳所有地址</td>
+<td align="center">0</td>
+<td align="center">相应范围的整型字面量</td>
+</tr>
+<tr>
+<td align="center">float32</td>
+<td align="center">4 bytes</td>
+<td align="center">0.0</td>
+<td align="center">相应范围的浮点字面量</td>
+</tr>
+<tr>
+<td align="center">float64</td>
+<td align="center">8 bytes</td>
+<td align="center">0.0</td>
+<td align="center">相应范围的浮点字面量</td>
+</tr>
+<tr>
+<td align="center">complex64</td>
+<td align="center">8 bytes</td>
+<td align="center">(0+0i)</td>
+<td align="center">float32 实部和虚部</td>
+</tr>
+<tr>
+<td align="center">complex128</td>
+<td align="center">16 bytes</td>
+<td align="center">(0+0i)</td>
+<td align="center">float64 实部和虚部</td>
+</tr>
+</tbody></table>
+<h3 id="字面量"><a href="#字面量" class="headerlink" title="字面量"></a>字面量</h3><ul>
+<li>整数型: 二进制 <code>0(b|B)</code> 八进制 <code>0[o|O]</code> 十六进制 <code>0(x|X)</code></li>
+<li>浮点型: 十进制浮点数(底数为 10 ，表示为 <code>e</code>) 十六进制浮点数(底数为 2 ，表示为 <code>p</code>)</li>
+<li>rune: 八进制 <code>\</code> 十六进制 <code>\x</code> 码点编码<code>\(u|U)</code><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>b10110 <span class="number">0123</span> <span class="number">0x123</span> <span class="number">123</span></span><br><span class="line"><span class="number">1.23e+10</span> <span class="number">1.23e-10</span> <span class="number">0x1</span><span class="number">.23</span>p10 <span class="number">0x1</span><span class="number">.23</span>p<span class="number">-10</span></span><br></pre></td></tr></table></figure>
+字面量作为值是无名常量，具有默认类型</li>
+<li>整型字面量默认类型是 int</li>
+<li>浮点型字面量默认类型是 float64</li>
+</ul>
+<h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> StringHeader <span class="keyword">struct</span> &#123;</span><br><span class="line">    Data <span class="keyword">uintptr</span> <span class="comment">// 指向 []byte</span></span><br><span class="line">    Len <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 而切片的结构是</span></span><br><span class="line"><span class="keyword">type</span> SliceHeader <span class="keyword">struct</span> &#123;</span><br><span class="line">    Data <span class="keyword">uintptr</span></span><br><span class="line">    Len <span class="keyword">int</span></span><br><span class="line">    Cap <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 所以 string 可以看成 readonly slice</span></span><br></pre></td></tr></table></figure>
+
+<p>字符串是按照 utf-8 编码存储</p>
+<h3 id="值尺寸"><a href="#值尺寸" class="headerlink" title="值尺寸"></a>值尺寸</h3><p>直接部分至少为 2 words，但是 go specification 未作要求，取决于编译器实现。间接部分根据存储内容决定。</p>
+<h3 id="零值"><a href="#零值" class="headerlink" title="零值"></a>零值</h3><p>空字符串 “”</p>
+<h3 id="字面量-1"><a href="#字面量-1" class="headerlink" title="字面量"></a>字面量</h3><ul>
+<li>单行字符串: <code>&quot;&quot;</code></li>
+<li>多行字符串: ``</li>
+</ul>
+<h3 id="相关操作"><a href="#相关操作" class="headerlink" title="相关操作"></a>相关操作</h3><ul>
+<li><p>求长度: <code>len(string)</code> 返回的是 utf-8 编码的字节数</p>
+</li>
+<li><p>遍历</p>
+<ul>
+<li>字节遍历<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> k, v := <span class="keyword">range</span> []<span class="keyword">byte</span>(<span class="keyword">string</span>)&#123;</span><br><span class="line">    fmt.Printf(<span class="string">&quot;seq: %v, value: %c\n&quot;</span>, k, v)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>码点遍历<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> k, v := <span class="keyword">range</span> <span class="keyword">string</span> &#123;</span><br><span class="line">    fmt.Printf(<span class="string">&quot;seq: %v, value: %c\n&quot;</span>, k, v)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 上面这个的 seq 是字节序，下面这个是码点序。</span></span><br><span class="line"><span class="comment">// 也就是说，如果字符串不转换成 []rune，读取是按照 utf-8 读取输出的</span></span><br><span class="line"><span class="keyword">for</span> k, v := <span class="keyword">range</span> []<span class="keyword">rune</span>(<span class="keyword">string</span>) &#123;</span><br><span class="line">    fmt.Printf(<span class="string">&quot;seq: %v, value: %c\n&quot;</span>, k, v)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>转换: []byte string 和 []rune 之间的转换，由于 string 只读，string 与另两者之间的互转都是深复制</p>
+<ul>
+<li>[]byte &lt;-&gt; []rune 如果用 string 做桥梁，有 2 次深复制，效率低，不用</li>
+<li>[]byte &lt;-&gt; []rune 使用 unicode/utf8 库</li>
+<li>[]byte -&gt; []rune 使用 byte 库，byte 库中没有 []rune -&gt; []byte</li>
+<li>string &lt;-&gt; []byte 有编译器优化不需要深复制的情形<ul>
+<li>for range string -&gt; []byte</li>
+<li>map[key] <strong>读取(写入时无效)</strong> key 对应的值时 []byte -&gt; string</li>
+<li>字符串比较时 []byte -&gt; string</li>
+<li>字符串衔接(至少有一个非空字符串参与) []byte -&gt; string <blockquote>
+<p><code>s := &quot; &quot; + string([]byte) + string([]byte)</code>// 1 次深复制<br><code>s := string([]byte) + string([]byte)</code> // 3 次深复制<br>有非空字符串参与，也许所以可以先分配非空字符串堆上内存块，之后将 []byte 的堆上地址指定过去？</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>拼接</p>
+<ul>
+<li>+ 运算: 大量拼接效率低，因为要不断申请复制内存</li>
+<li>strings.Builder，bytes.Buffer，[]byte: 效率差不多，减少内存分配次数才能更高，所以如果确定拼接后长度，预申请足够长度的 []byte 会是最高的效率</li>
+</ul>
+</li>
+<li><p>比较<br> 对于 <code>== !=</code> 的比较，如果两字符串的底层指针指向同一位置，那么比较长度就可知道，复杂度 O(1)；如果不同，那么就要比较长度再比较字节，复杂度是 O(n)。<br> 所以字符串比较应尽量做相同底层指针的比较，也就是字符串赋值要尽量共享底层元素</p>
+</li>
+</ul>
+
+  
+
+
+  </article>
+  
+<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>接下来阅读</span></section><section class="body fs14"><a id="next" href="/wiki/golang/basic/container.html">容器类型<span class="note">下一篇</span></a><div class="line"></div><a id="prev" href="/wiki/golang/basic/type_general.html">类型和值概述<span class="note">上一篇</span></a></section></div>
+
+  
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="text"><p>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+<p>本站由 <a href="https://intxff.github.io/">@intxff</a> 创建，使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.4.0" title="v1.4.0">Stellar</a> 作为主题。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.4.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
+    sitesjs: '/js/plugins/sites.js',
+    friendsjs: '/js/plugins/friends.js',
+  };
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper/swiper-bundle.min.css","js":"https://unpkg.com/swiper/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://cdn.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://cdn.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://cdn.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>

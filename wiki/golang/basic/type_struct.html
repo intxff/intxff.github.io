@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 5.4.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://cdn.jsdelivr.net'>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>golang：struct - Eureka</title>
+
+  
+    <meta name="description" content="定义123456struct &amp;#123;    field type tag    field type tag    .    .&amp;#125;   只有导出字段可以被其它包使用  值尺寸取决于内部字段和内存对齐规则 字面量1234567891011121314&#x2F;&#x2F; 匿名结构体字面量struct &amp;#123;    x int    y int&amp;#125; &amp;#123;    x: 1    y">
+<meta property="og:type" content="website">
+<meta property="og:title" content="struct">
+<meta property="og:url" content="https://intxff.github.io/wiki/golang/basic/type_struct.html">
+<meta property="og:site_name" content="Eureka">
+<meta property="og:description" content="定义123456struct &amp;#123;    field type tag    field type tag    .    .&amp;#125;   只有导出字段可以被其它包使用  值尺寸取决于内部字段和内存对齐规则 字面量1234567891011121314&#x2F;&#x2F; 匿名结构体字面量struct &amp;#123;    x int    y int&amp;#125; &amp;#123;    x: 1    y">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-10T03:19:33.389Z">
+<meta property="article:modified_time" content="2022-01-10T03:19:33.389Z">
+<meta property="article:author" content="intxff">
+<meta name="twitter:card" content="summary">
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+</head>
+
+<body>
+  
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='wiki'>
+    
+
+
+<header class="header">
+
+<div class="logo-wrap wiki"><a style="filter: grayscale(100%)" class="wiki-home cap" href="/wiki"><svg aria-hidden="true" viewBox="0 0 16 16" width="1rem" height="1rem" fill="currentColor"><path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path></svg>所有项目</a><a class="title" href="/wiki/golang/basic/"><div class="main">golang 基础总结</div></a></div>
+</header>
+
+<div class="widgets">
+
+<div class="widget-wrap multi" id="toc"><div class="widget-header cap dis-select"><span class="name">语法速览</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/"><span class="toc-text">语法速览</span></a></div></div><div class="widget-header cap dis-select"><span class="name">类型系统</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type.html"><span class="toc-text">类型系统相关</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_general.html"><span class="toc-text">类型和值概述</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/basic_type.html"><span class="toc-text">内置基本类型</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/container.html"><span class="toc-text">容器类型</span></a></div><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/golang/basic/type_struct.html"><span class="toc-text">struct</span></a><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-text">定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%80%BC%E5%B0%BA%E5%AF%B8"><span class="toc-text">值尺寸</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E9%9D%A2%E9%87%8F"><span class="toc-text">字面量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9B%B6%E5%80%BC"><span class="toc-text">零值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E7%B1%BB%E5%9E%8B%E5%86%85%E5%B5%8C"><span class="toc-text">结构体类型内嵌</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%B5%8C%E7%9A%84%E7%B1%BB%E5%9E%8B%E8%A6%81%E6%B1%82"><span class="toc-text">内嵌的类型要求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E5%99%A8"><span class="toc-text">选择器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E5%BC%8F%E5%A3%B0%E6%98%8E%E7%9A%84%E6%96%B9%E6%B3%95%E5%92%8C%E5%87%BD%E6%95%B0"><span class="toc-text">隐式声明的方法和函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E5%8D%87%E6%96%B9%E6%B3%95%E5%80%BC%E7%9A%84%E6%AD%A3%E8%A7%84%E5%8C%96%E5%92%8C%E4%BC%B0%E5%80%BC"><span class="toc-text">提升方法值的正规化和估值</span></a></li></ol></li></ol></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_pointer.html"><span class="toc-text">指针和非安全指针</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_channel.html"><span class="toc-text">channel</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_interface.html"><span class="toc-text">interface</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_convert.html"><span class="toc-text">类型转换</span></a></div></div></div>
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+  
+  
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">学习记录</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/golang/basic/">golang 基础总结</a></div><div id="post-meta">更新于&nbsp;<time datetime="2022-01-10T03:19:33.389Z">2022-01-10</time></div></div>
+
+  <article class='content md wiki'>
+  <h1 class="article-title"><span>struct</span></h1>
+  <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> &#123;</span><br><span class="line">    field <span class="keyword">type</span> tag</span><br><span class="line">    field <span class="keyword">type</span> tag</span><br><span class="line">    .</span><br><span class="line">    .</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>只有导出字段可以被其它包使用</li>
+</ul>
+<h2 id="值尺寸"><a href="#值尺寸" class="headerlink" title="值尺寸"></a>值尺寸</h2><p>取决于内部字段和内存对齐规则</p>
+<h2 id="字面量"><a href="#字面量" class="headerlink" title="字面量"></a>字面量</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 匿名结构体字面量</span></span><br><span class="line"><span class="keyword">struct</span> &#123;</span><br><span class="line">    x <span class="keyword">int</span></span><br><span class="line">    y <span class="keyword">int</span></span><br><span class="line">&#125; &#123;</span><br><span class="line">    x: <span class="number">1</span></span><br><span class="line">    y: <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 结构体定义类型 T 字面量</span></span><br><span class="line"><span class="keyword">type</span> T <span class="keyword">struct</span> &#123;</span><br><span class="line">    x <span class="keyword">int</span></span><br><span class="line">    y <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line">T&#123;x: <span class="number">1</span>, y: <span class="number">1</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="零值"><a href="#零值" class="headerlink" title="零值"></a>零值</h2><p><code>struct&#123;&#125;</code> or <code>T&#123;&#125;</code> 是零值</p>
+<h2 id="结构体类型内嵌"><a href="#结构体类型内嵌" class="headerlink" title="结构体类型内嵌"></a>结构体类型内嵌</h2><p>一个字段可以仅由一个字段类型组成，这样的字段声明方式称为类型内嵌（type embedding）。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="keyword">struct</span> &#123;</span><br><span class="line">   <span class="keyword">string</span> <span class="comment">// 一个定义的非指针类型</span></span><br><span class="line">    error  <span class="comment">// 一个定义的接口类型</span></span><br><span class="line">    *<span class="keyword">int</span>   <span class="comment">// 一个非定义指针类型</span></span><br><span class="line">    P      <span class="comment">// 一个非定义指针类型的别名</span></span><br><span class="line">    M      <span class="comment">// 一个非定义类型的别名</span></span><br><span class="line"></span><br><span class="line">    http.Header <span class="comment">// 一个定义的映射类型</span></span><br><span class="line"> &#125;</span><br><span class="line"> x.<span class="keyword">string</span> = <span class="string">&quot;Go&quot;</span></span><br><span class="line"> x.error = <span class="literal">nil</span></span><br><span class="line"> x.<span class="keyword">int</span> = <span class="built_in">new</span>(<span class="keyword">int</span>)</span><br><span class="line"> x.P = <span class="built_in">new</span>(<span class="keyword">bool</span>)</span><br><span class="line"> x.M = <span class="built_in">make</span>(M)</span><br><span class="line"> x.Header = http.Header&#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>类型内嵌的字段其字段类型就是其匿名字段名</p>
+<h3 id="内嵌的类型要求"><a href="#内嵌的类型要求" class="headerlink" title="内嵌的类型要求"></a>内嵌的类型要求</h3><ul>
+<li>T 与( *T 的 T ) 必须是定义名或者别名，且如果 T 与 *T 的 T 同名，两者不能同时出现<blockquote>
+<p>也就是说组合类型 <code>map slice</code> 之类的必须先定义名或声明别名才能使用(废话，没代号怎么写出来调用)</p>
+</blockquote>
+</li>
+<li>类型 T: T 不是一个定义的指针类型</li>
+<li>类型 *T: *T 基类型 (即 T) 不是指针类型或者接口类型，<blockquote>
+<p>类型 T 或 *T 的基类型 T 是一个类型别名的话，要还原成原名再分析基类型</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="选择器"><a href="#选择器" class="headerlink" title="选择器"></a>选择器</h3><p>对结构体字段或者匿名字段及其方法的索引</p>
+<ul>
+<li>缩写: 可以省略内嵌字段的名来直接调用内嵌字段内的字段</li>
+<li>碰撞和遮挡: 选择器缩写引起的问题(浅有效，深不缩)<ul>
+<li>深度最浅的缩写有效，更深的缩写无效(遮挡)</li>
+<li>同深度同名的字段不能使用缩写，必须要完整(碰撞)</li>
+</ul>
+</li>
+</ul>
+<h3 id="隐式声明的方法和函数"><a href="#隐式声明的方法和函数" class="headerlink" title="隐式声明的方法和函数"></a>隐式声明的方法和函数</h3><p>如果没有碰撞和遮挡，原来为 S 类型内嵌的字段 T 或者 *T 声明的方法，也会为 S 或者 *S 声明(提升方法值)</p>
+<h3 id="提升方法值的正规化和估值"><a href="#提升方法值的正规化和估值" class="headerlink" title="提升方法值的正规化和估值"></a>提升方法值的正规化和估值</h3><p>还原完整选择器形式，指针缩写还原，估值</p>
+
+  
+
+
+  </article>
+  
+<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>接下来阅读</span></section><section class="body fs14"><a id="next" href="/wiki/golang/basic/type_pointer.html">指针和非安全指针<span class="note">下一篇</span></a><div class="line"></div><a id="prev" href="/wiki/golang/basic/container.html">容器类型<span class="note">上一篇</span></a></section></div>
+
+  
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="text"><p>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+<p>本站由 <a href="https://intxff.github.io/">@intxff</a> 创建，使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.4.0" title="v1.4.0">Stellar</a> 作为主题。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.4.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
+    sitesjs: '/js/plugins/sites.js',
+    friendsjs: '/js/plugins/friends.js',
+  };
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper/swiper-bundle.min.css","js":"https://unpkg.com/swiper/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://cdn.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://cdn.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://cdn.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>

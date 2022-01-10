@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 5.4.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://cdn.jsdelivr.net'>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>golang：channel - Eureka</title>
+
+  
+    <meta name="description" content="1type _channel *channelImpl  值尺寸1 word 字面量 双向通道: chan EleType 只读通道: &lt;-chan EleType 只写通道: chan&lt;- EleType  1234&#x2F;&#x2F; make 出的非 0 值c :&#x3D; make([&lt;-]chan[&lt;-] EleType, BufferSize)&#x2F;&#x2F; new 出的为零值c :&#x3D; *new">
+<meta property="og:type" content="website">
+<meta property="og:title" content="channel">
+<meta property="og:url" content="https://intxff.github.io/wiki/golang/basic/type_channel.html">
+<meta property="og:site_name" content="Eureka">
+<meta property="og:description" content="1type _channel *channelImpl  值尺寸1 word 字面量 双向通道: chan EleType 只读通道: &lt;-chan EleType 只写通道: chan&lt;- EleType  1234&#x2F;&#x2F; make 出的非 0 值c :&#x3D; make([&lt;-]chan[&lt;-] EleType, BufferSize)&#x2F;&#x2F; new 出的为零值c :&#x3D; *new">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-10T03:19:33.389Z">
+<meta property="article:modified_time" content="2022-01-10T03:19:33.389Z">
+<meta property="article:author" content="intxff">
+<meta name="twitter:card" content="summary">
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+</head>
+
+<body>
+  
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='wiki'>
+    
+
+
+<header class="header">
+
+<div class="logo-wrap wiki"><a style="filter: grayscale(100%)" class="wiki-home cap" href="/wiki"><svg aria-hidden="true" viewBox="0 0 16 16" width="1rem" height="1rem" fill="currentColor"><path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path></svg>所有项目</a><a class="title" href="/wiki/golang/basic/"><div class="main">golang 基础总结</div></a></div>
+</header>
+
+<div class="widgets">
+
+<div class="widget-wrap multi" id="toc"><div class="widget-header cap dis-select"><span class="name">语法速览</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/"><span class="toc-text">语法速览</span></a></div></div><div class="widget-header cap dis-select"><span class="name">类型系统</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type.html"><span class="toc-text">类型系统相关</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_general.html"><span class="toc-text">类型和值概述</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/basic_type.html"><span class="toc-text">内置基本类型</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/container.html"><span class="toc-text">容器类型</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_struct.html"><span class="toc-text">struct</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_pointer.html"><span class="toc-text">指针和非安全指针</span></a></div><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/golang/basic/type_channel.html"><span class="toc-text">channel</span></a><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%80%BC%E5%B0%BA%E5%AF%B8"><span class="toc-text">值尺寸</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E9%9D%A2%E9%87%8F"><span class="toc-text">字面量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9B%B6%E5%80%BC"><span class="toc-text">零值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84"><span class="toc-text">内部结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C"><span class="toc-text">操作</span></a></li></ol></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_interface.html"><span class="toc-text">interface</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/golang/basic/type_convert.html"><span class="toc-text">类型转换</span></a></div></div></div>
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+  
+  
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">学习记录</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/golang/basic/">golang 基础总结</a></div><div id="post-meta">更新于&nbsp;<time datetime="2022-01-10T03:19:33.389Z">2022-01-10</time></div></div>
+
+  <article class='content md wiki'>
+  <h1 class="article-title"><span>channel</span></h1>
+  <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> _channel *channelImpl</span><br></pre></td></tr></table></figure>
+
+<h2 id="值尺寸"><a href="#值尺寸" class="headerlink" title="值尺寸"></a>值尺寸</h2><p>1 word</p>
+<h2 id="字面量"><a href="#字面量" class="headerlink" title="字面量"></a>字面量</h2><ul>
+<li>双向通道: chan EleType</li>
+<li>只读通道: &lt;-chan EleType</li>
+<li>只写通道: chan&lt;- EleType</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// make 出的非 0 值</span></span><br><span class="line">c := <span class="built_in">make</span>([&lt;-]<span class="keyword">chan</span>[&lt;-] EleType, BufferSize)</span><br><span class="line"><span class="comment">// new 出的为零值</span></span><br><span class="line">c := *<span class="built_in">new</span>([&lt;-]<span class="keyword">chan</span>[&lt;-] EleType)</span><br></pre></td></tr></table></figure>
+
+<h2 id="零值"><a href="#零值" class="headerlink" title="零值"></a>零值</h2><p><code>nil</code></p>
+<h2 id="内部结构"><a href="#内部结构" class="headerlink" title="内部结构"></a>内部结构</h2><p>一个通道有 3 个队列和一个互斥锁维护数据同步</p>
+<ul>
+<li>数据缓冲队列: BufferSize 长度的循环队列</li>
+<li>接收协程队列: 阻塞的等待从通道接收数据的协程</li>
+<li>发送协程队列: 阻塞的等待向通道发送数据的协程</li>
+</ul>
+<h2 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h2><ul>
+<li>关闭 close(channel)</li>
+<li>发送 channel&lt;-</li>
+<li>接收 &lt;-channel: 返回值有两个，第二个可选返回值是 bool，true 表示正常接到从数据缓冲区或未阻塞的发送协程发来的数据，false 表示从已关闭的非零通道接收到 EleType 零值，但是这个值不能用来判断 channel 是否关闭，因为一个已关闭的非零通道在数据缓冲区有数据时也返回 true。</li>
+<li>len(channel) 和 cap(channel)<blockquote>
+<p>尽管上述通道的操作是同步，但是<strong>通道的赋值</strong>和<strong>从通道接收出来值进行赋值</strong>却是跟其它类型的一样是未同步的<br>a := &lt;-ch // 通道接收值并赋值给其它值<br>ch = AnotherCh // 通道赋值</p>
+</blockquote>
+</li>
+<li><code>for v := range ch</code>: 不断尝试从通道中获取数据直到通道关闭并且数据缓冲队列数据清空<blockquote>
+<p>等价于</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> &#123;</span><br><span class="line">    v, ok := &lt;-ch</span><br><span class="line">    <span class="keyword">if</span> !ok &#123;</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    &#125;</span><br><span class="line">    dosomething on v</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li>select case</li>
+<li>通道元素值的传递都是值复制 </li>
+<li>数据接收和发送操作是简单语句</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">操作</th>
+<th align="center">(chan EleType)(nil)</th>
+<th align="center">非零值但已关闭通道</th>
+<th align="center">非零值正常通道</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">close</td>
+<td align="center">panic</td>
+<td align="center">panic</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">send</td>
+<td align="center">block</td>
+<td align="center"><strong>panic</strong> 5</td>
+<td align="center">2</td>
+</tr>
+<tr>
+<td align="center">receive</td>
+<td align="center">block</td>
+<td align="center">3</td>
+<td align="center">4</td>
+</tr>
+</tbody></table>
+<ol>
+<li>关闭成功</li>
+</ol>
+<ul>
+<li>接收协程队列不为空 =&gt;  数据缓冲区为空 =&gt; 弹出等待的协程，接收到 EleType 的零值，不阻塞</li>
+<li>发送协程队列不为空 =&gt;  数据缓冲队列已满 =&gt; 弹出等待的协程，等待的协程将 panic</li>
+</ul>
+<ol start="2">
+<li>阻塞或者发送成功</li>
+</ol>
+<ul>
+<li>缓冲通道<ul>
+<li>接收协程队列不空 =&gt; 数据缓冲队列为空 =&gt; 弹出一个接收协程接收发送协程的值，发送协程不阻塞</li>
+<li>接收协程队列空 =&gt; 数据缓冲队列不满 =&gt; 发送协程的值存储到数据缓冲队列，发送协程不阻塞</li>
+<li>接收协程队列空 =&gt; 数据缓冲队列已满 =&gt; 发送协程加入到发送协程队列，发送协程阻塞</li>
+</ul>
+</li>
+<li>非缓冲通道<ul>
+<li>接收协程队列为空 =&gt; 加入发送协程队列，阻塞</li>
+<li>接收协程队列不空 =&gt; 弹出一个接收协程接收数据，不阻塞</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>永不阻塞</li>
+</ol>
+<ul>
+<li>数据缓冲队列尚有数据 =&gt; 接收协程接收到缓冲的值</li>
+<li>数据缓冲队列没有数据 =&gt; 接收到 EleType 类型的零值</li>
+</ul>
+<ol start="4">
+<li>阻塞或者接收成功</li>
+</ol>
+<ul>
+<li>缓冲通道<ul>
+<li>发送协程队列不为空 =&gt; 缓冲队列已满 =&gt; 从缓冲队列接收数据，不阻塞</li>
+<li>发送协程队列空且数据缓冲队列未满 =&gt; 从数据缓冲队列接收数据，不阻塞</li>
+<li>发送协程队列空且数据缓冲队列空 =&gt; 接收协程加入接收协程队列，阻塞</li>
+</ul>
+</li>
+<li>非缓冲通道<ul>
+<li>发送协程队列不为空 =&gt; 弹出发送协程，接收协程接收发送协程的数据，不阻塞</li>
+<li>发送协程队列空 =&gt; 加入接收协程队列，阻塞</li>
+</ul>
+</li>
+</ul>
+<ol start="5">
+<li>panic 的原因: 已关闭的通道，其发送协程队列不接受任何协程加入</li>
+</ol>
+
+  
+
+
+  </article>
+  
+<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>接下来阅读</span></section><section class="body fs14"><a id="next" href="/wiki/golang/basic/type_interface.html">interface<span class="note">下一篇</span></a><div class="line"></div><a id="prev" href="/wiki/golang/basic/type_pointer.html">指针和非安全指针<span class="note">上一篇</span></a></section></div>
+
+  
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="text"><p>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+<p>本站由 <a href="https://intxff.github.io/">@intxff</a> 创建，使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.4.0" title="v1.4.0">Stellar</a> 作为主题。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.4.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
+    sitesjs: '/js/plugins/sites.js',
+    friendsjs: '/js/plugins/friends.js',
+  };
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper/swiper-bundle.min.css","js":"https://unpkg.com/swiper/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://cdn.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://cdn.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://cdn.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>
