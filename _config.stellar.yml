@@ -1,7 +1,7 @@
 sidebar:
   menu:
     post: '[随笔](/)'
-    wiki: '[读书](/book/)'
+    wiki: '[学习记录](/wiki/)'
     wish: '[祈愿](/wish/)'
 
 article:
@@ -10,4 +10,4 @@ article:
 
 style:
   codeblock:
-    scrollbar: 0px
+    scrollbar: 3px

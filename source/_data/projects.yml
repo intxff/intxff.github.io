@@ -1,9 +1,44 @@
 Wish:
   title: 祈愿
   index: false
-  description: '渺小的愿望'
+  description: '小小的愿望'
   sidebar: [toc]
   sections:
     '健身': [1, 50]
     '书籍': [51, 100]
     '视频': [101, 150]
+
+k8s:
+  title: k8s
+  index: true
+  tags: k8s
+  description: 'k8s'
+  sidebar: [toc]
+  sections:
+    '健身': [1, 50]
+    '书籍': [51, 100]
+    '视频': [101, 150]
+
+golang:
+  title: golang 基础总结
+  index: true
+  tags: golang
+  cover: true
+  description: 'golang 核心语法以及基本浅显的内部原理总结'
+  sidebar: [toc]
+  sections:
+    '语法速览': [1, 50]
+    '类型系统': [51, 100]
+    '常见理解以及使用错误': [101, 150]
+
+Core Skills:
+  title: 数据结构和算法
+  index: true
+  tags: Core Skills
+  cover: true
+  description: '常用数据结构和算法学习'
+  sidebar: [toc]
+  sections:
+    '线性表': [1, 50]
+    '树': [51, 100]
+    '图': [101, 150]

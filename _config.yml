@@ -4,6 +4,7 @@
 
 # Site
 title: Eureka
+avatar: https://raw.githubusercontent.com/intxff/blogfiles/main/pics/avatar/%E4%B8%96%E7%95%8C%E7%8C%AB%E3%81%AE%E6%97%A5.jpg
 subtitle: '『不要哀求，学会争取，若是如此，终有所获』'
 description: ''
 keywords:
@@ -28,7 +29,7 @@ public_dir: public
 tag_dir: blog/tags
 archive_dir: blog/archives
 category_dir: blog/categories
-wiki_dir: book
+wiki_dir: wiki
 code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
