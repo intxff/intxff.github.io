@@ -3,70 +3,7 @@
 <span></span>
 <span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>Home</li></a><a href=/post/><li class=mobile-menu-item>Archives</li></a><a href=/tags/><li class=mobile-menu-item>Tags</li></a><a href=/categories/><li class=mobile-menu-item>Categories</li></a></ul><div class=language-selector><ul class=languages-list><li class="language-item active"><a href=/zh-cn/>中文</a></li><li class=language-item><a href=/en-us/>EN</a></li></ul></div></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/zh-cn/ class=logo>Tender Night</a></div><div class=language-selector><ul class=languages-list><li class="language-item active"><a href=/zh-cn/>中文</a></li><li class=language-item><a href=/en-us/>EN</a></li></ul></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/zh-cn/>首页</a></li><li class=menu-item><a class=menu-item-link href=/zh-cn/post/>归档</a></li><li class=menu-item><a class=menu-item-link href=/zh-cn/tags/>标签</a></li><li class=menu-item><a class=menu-item-link href=/zh-cn/categories/>分类</a></li></ul></nav></header><main id=main class=main><div class=content-wrapper><div id=content class=content><section id=posts class=posts><article class=post><header class=post-header><h1 class=post-title><a class=post-link href=/zh-cn/post/go-gmp-%E8%B0%83%E5%BA%A6%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/>Go GMP 调度源码分析</a></h1><div class=post-meta><span class=post-time>2023-11-07</span><div class=post-category><a href=/zh-cn/categories/go-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/>go 源码分析</a>
 <a href=/zh-cn/categories/%E5%A4%8D%E8%AF%BB%E6%9C%BA/>复读机</a></div></div></header><div class=post-content><div class=post-summary>这篇文章不会采用列举各种状态变换之类的方式说明调度过程，目的是让读者能根据简短的操作说明(对，很简短，所以你要学下 gdb 调试的常用指令)，自己跟</div><div class=read-more><a href=/zh-cn/post/go-gmp-%E8%B0%83%E5%BA%A6%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/ class=read-more-link>阅读更多</a></div></div></article><article class=post><header class=post-header><h1 class=post-title><a class=post-link href=/zh-cn/post/go-mutex-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/>Go Mutex 源码分析</a></h1><div class=post-meta><span class=post-time>2023-11-05</span><div class=post-category><a href=/zh-cn/categories/go-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/>Go 源码分析</a>
-<a href=/zh-cn/categories/%E5%A4%8D%E8%AF%BB%E6%9C%BA/>复读机</a></div></div></header><div class=post-content><div class=post-summary>源码版本是 go 1.21，主要分析 sync.Mutex 中的内容，搞清楚加解锁过程和其中的调度过程。分析时请记住 Mutex 是被多个 goroutine 共享的量，每个协程都在运行代码中不同的位</div><div class=read-more><a href=/zh-cn/post/go-mutex-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/ class=read-more-link>阅读更多</a></div></div></article><article class=post><header class=post-header><h1 class=post-title><a class=post-link href=/zh-cn/post/shortcodes/>Shortcodes</a></h1><div class=post-meta><span class=post-time>2016-08-30</span><div class=post-category><a href=/zh-cn/categories/shortcodes/>shortcodes</a></div></div></header><div class=post-content><div class=post-summary><h1 id=admonition>Admonition</h1><div class="admonition note"><p class=admonition-title>I'm title!</p><p>biu biu biu.</p><details class="admonition note"><summary class=admonition-title>note</summary><p>biu biu biu.</p></details><div class="admonition example"><p>Without title.</p></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
-</span><span class=lnt> 2
-</span><span class=lnt> 3
-</span><span class=lnt> 4
-</span><span class=lnt> 5
-</span><span class=lnt> 6
-</span><span class=lnt> 7
-</span><span class=lnt> 8
-</span><span class=lnt> 9
-</span><span class=lnt>10
-</span><span class=lnt>11
-</span><span class=lnt>12
-</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl>{{% admonition note &#34;I&#39;m title!&#34; false %}}
-</span></span><span class=line><span class=cl>biu biu biu.
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>{{% admonition type=&#34;note&#34; title=&#34;note&#34; details=&#34;true&#34; %}}
-</span></span><span class=line><span class=cl>biu biu biu.
-</span></span><span class=line><span class=cl>{{% /admonition %}}
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>{{% admonition example %}}
-</span></span><span class=line><span class=cl>Without title.
-</span></span><span class=line><span class=cl>{{% /admonition %}}
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>{{% /admonition %}}
-</span></span></code></pre></td></tr></table></div></div></div><div class=read-more><a href=/zh-cn/post/shortcodes/ class=read-more-link>阅读更多</a></div></div></article><article class=post><header class=post-header><h1 class=post-title><a class=post-link href=/zh-cn/post/js-flowchart-diagrams/>JS Flowchart Diagrams</a></h1><div class=post-meta><span class=post-time>2015-03-04</span></div></header><div class=post-content><div class=post-summary><h2 id=usage>Usage</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
-</span><span class=lnt> 2
-</span><span class=lnt> 3
-</span><span class=lnt> 4
-</span><span class=lnt> 5
-</span><span class=lnt> 6
-</span><span class=lnt> 7
-</span><span class=lnt> 8
-</span><span class=lnt> 9
-</span><span class=lnt>10
-</span><span class=lnt>11
-</span><span class=lnt>12
-</span><span class=lnt>13
-</span><span class=lnt>14
-</span><span class=lnt>15
-</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>st=&gt;start: Start|past:&gt;http://www.google.com[blank]
-</span></span><span class=line><span class=cl>e=&gt;end: End:&gt;http://www.google.com
-</span></span><span class=line><span class=cl>op1=&gt;operation: My Operation|past
-</span></span><span class=line><span class=cl>op2=&gt;operation: Stuff|current
-</span></span><span class=line><span class=cl>sub1=&gt;subroutine: My Subroutine|invalid
-</span></span><span class=line><span class=cl>cond=&gt;condition: Yes
-</span></span><span class=line><span class=cl>or No?|approved:&gt;http://www.google.com
-</span></span><span class=line><span class=cl>c2=&gt;condition: Good idea|rejected
-</span></span><span class=line><span class=cl>io=&gt;inputoutput: catch something...|request
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>st-&gt;op1(right)-&gt;cond
-</span></span><span class=line><span class=cl>cond(yes, right)-&gt;c2
-</span></span><span class=line><span class=cl>cond(no)-&gt;sub1(left)-&gt;op1
-</span></span><span class=line><span class=cl>c2(yes)-&gt;io-&gt;e
-</span></span><span class=line><span class=cl>c2(no)-&gt;op2-&gt;e
-</span></span></code></pre></td></tr></table></div></div></div><div class=read-more><a href=/zh-cn/post/js-flowchart-diagrams/ class=read-more-link>阅读更多</a></div></div></article><article class=post><header class=post-header><h1 class=post-title><a class=post-link href=/zh-cn/post/js-sequence-diagrams/>JS Sequence Diagrams</a></h1><div class=post-meta><span class=post-time>2015-03-04</span></div></header><div class=post-content><div class=post-summary><h2 id=usage>Usage</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span><span class=lnt>4
-</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>Andrew-&gt;China: Says Hello
-</span></span><span class=line><span class=cl>Note right of China: China thinks\nabout it
-</span></span><span class=line><span class=cl>China--&gt;Andrew: How are you?
-</span></span><span class=line><span class=cl>Andrew-&gt;&gt;China: I am good thanks!
-</span></span></code></pre></td></tr></table></div></div></div><div class=read-more><a href=/zh-cn/post/js-sequence-diagrams/ class=read-more-link>阅读更多</a></div></div></article></section><nav class=pagination><a class=next href=/zh-cn/page/2/><span class=next-text>下一页</span>
-<i class="iconfont icon-right"></i></a></nav></div></div></main><footer id=footer class=footer><div class=social-links><a href=http://localhost:1313 class="iconfont icon-github" title=github></a>
+<a href=/zh-cn/categories/%E5%A4%8D%E8%AF%BB%E6%9C%BA/>复读机</a></div></div></header><div class=post-content><div class=post-summary>源码版本是 go 1.21，主要分析 sync.Mutex 中的内容，搞清楚加解锁过程和其中的调度过程。分析时请记住 Mutex 是被多个 goroutine 共享的量，每个协程都在运行代码中不同的位</div><div class=read-more><a href=/zh-cn/post/go-mutex-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/ class=read-more-link>阅读更多</a></div></div></article></section><nav class=pagination></nav></div></div></main><footer id=footer class=footer><div class=social-links><a href=http://localhost:1313 class="iconfont icon-github" title=github></a>
 <a href=/zh-cn/index.xml type=application/rss+xml class="iconfont icon-rss" title=rss></a></div><div class=copyright><span class=power-by>由 <a class=hexo-link href=https://gohugo.io>Hugo</a> 强力驱动</span>
 <span class=division>|</span>
 <span class=theme-info>主题 -
